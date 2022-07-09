@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.ezylang</groupId>
+  <artifactId>evalex-core</artifactId>
+  <version>3.0.0-SNAPSHOT</version>
+
+  <description>EvalEx is a handy expression evaluator for Java, that allows to evaluate
+    expressions.
+  </description>
+  <url>https://github.com/ezylang/evalex-core</url>
+
+  <organization>
+    <name>Udo Klimaschewski</name>
+    <url>https://github.com/ezylang/evalex-core</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>https://github.com/ezylang/evalex-core/blob/main/LICENSE</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Udo Klimaschewski</name>
+      <organizationUrl>https://github.com/uklimaschewski</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:ezylang/evalex-core.git</connection>
+    <developerConnection>scm:git:git@github.com:ezylang/evalex-core.git</developerConnection>
+    <url>https://github.com/ezylang/evalex-core</url>
+  </scm>
+
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/ezylang/evalex-core/issues</url>
+  </issueManagement>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.junit>5.8.2</version.junit>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <!-- We do not allow any runtime dependencies in EvalEx -->
+    <!-- Project Lombok needs no runtime dependency, hence it has scope "provided" -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.24</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Dependencies used for testing -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.23.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>4.6.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>2.23.0</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <java>
+            <includes>
+              <include>src/main/java/**/*.java</include>
+              <include>src/test/java/**/*.java</include>
+            </includes>
+            <googleJavaFormat>
+              <version>1.15.0</version>
+              <style>GOOGLE</style>
+              <reflowLongStrings>true</reflowLongStrings>
+            </googleJavaFormat>
+            <licenseHeader>
+              <file>${basedir}/license-header.txt</file>
+            </licenseHeader>
+          </java>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
