@@ -26,6 +26,10 @@ import com.ezylang.evalex.parser.Token.TokenType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The tokenizer is responsible to parse a string and return a list of tokens. The order of tokens
+ * will follow the infix expression notation, skipping any lank characters.
+ */
 public class Tokenizer {
 
   private final String expressionString;
@@ -53,6 +57,12 @@ public class Tokenizer {
     this.functionDictionary = configuration.getFunctionDictionary();
   }
 
+  /**
+   * Parse the given expression and return a list of tokens, representing the expressio.
+   *
+   * @return A list of expression tokens.
+   * @throws ParseException When the expression can't be parsed.
+   */
   public List<Token> parse() throws ParseException {
     Token currentToken = getNextToken();
     while (currentToken != null) {
@@ -81,8 +91,11 @@ public class Tokenizer {
   }
 
   private Token getNextToken() throws ParseException {
+
+    // blanks are always skipped.
     skipBlanks();
 
+    // end of input
     if (currentChar == -1) {
       return null;
     }
@@ -91,46 +104,17 @@ public class Tokenizer {
     if (currentChar == '"') {
       return parseStringLiteral();
     } else if (currentChar == '(') {
-      Token token = new Token(currentColumnIndex, "(", BRACE_OPEN);
-      consumeChar();
-      braceBalance++;
-      return token;
+      return parseBraceOpen();
     } else if (currentChar == ')') {
-      Token token = new Token(currentColumnIndex, ")", TokenType.BRACE_CLOSE);
-      consumeChar();
-      braceBalance--;
-      if (braceBalance < 0) {
-        throw new ParseException(token, "Unexpected closing brace");
-      }
-      return token;
+      return parseBraceClose();
     } else if (currentChar == '[' && configuration.isArraysAllowed()) {
-      Token token = new Token(currentColumnIndex, "[", TokenType.ARRAY_OPEN);
-      if (arrayOpenOrStructureSeparatorNotAllowed()) {
-        throw new ParseException(token, "Array open not allowed here");
-      }
-      consumeChar();
-      arrayBalance++;
-      return token;
+      return parseArrayOpen();
     } else if (currentChar == ']' && configuration.isArraysAllowed()) {
-      Token token = new Token(currentColumnIndex, "]", TokenType.ARRAY_CLOSE);
-      if (!arrayCloseAllowed()) {
-        throw new ParseException(token, "Array close not allowed here");
-      }
-      consumeChar();
-      arrayBalance--;
-      if (arrayBalance < 0) {
-        throw new ParseException(token, "Unexpected closing array");
-      }
-      return token;
+      return parseArrayClose();
     } else if (currentChar == '.'
         && !isNumberChar(peekNextChar())
         && configuration.isStructuresAllowed()) {
-      Token token = new Token(currentColumnIndex, ".", TokenType.STRUCTURE_SEPARATOR);
-      if (arrayOpenOrStructureSeparatorNotAllowed()) {
-        throw new ParseException(token, "Structure separator not allowed here");
-      }
-      consumeChar();
-      return token;
+      return parseStructureSeparator();
     } else if (currentChar == ',') {
       Token token = new Token(currentColumnIndex, ",", TokenType.COMMA);
       consumeChar();
@@ -142,6 +126,55 @@ public class Tokenizer {
     } else {
       return parseOperator();
     }
+  }
+
+  private Token parseStructureSeparator() throws ParseException {
+    Token token = new Token(currentColumnIndex, ".", TokenType.STRUCTURE_SEPARATOR);
+    if (arrayOpenOrStructureSeparatorNotAllowed()) {
+      throw new ParseException(token, "Structure separator not allowed here");
+    }
+    consumeChar();
+    return token;
+  }
+
+  private Token parseArrayClose() throws ParseException {
+    Token token = new Token(currentColumnIndex, "]", TokenType.ARRAY_CLOSE);
+    if (!arrayCloseAllowed()) {
+      throw new ParseException(token, "Array close not allowed here");
+    }
+    consumeChar();
+    arrayBalance--;
+    if (arrayBalance < 0) {
+      throw new ParseException(token, "Unexpected closing array");
+    }
+    return token;
+  }
+
+  private Token parseArrayOpen() throws ParseException {
+    Token token = new Token(currentColumnIndex, "[", TokenType.ARRAY_OPEN);
+    if (arrayOpenOrStructureSeparatorNotAllowed()) {
+      throw new ParseException(token, "Array open not allowed here");
+    }
+    consumeChar();
+    arrayBalance++;
+    return token;
+  }
+
+  private Token parseBraceClose() throws ParseException {
+    Token token = new Token(currentColumnIndex, ")", TokenType.BRACE_CLOSE);
+    consumeChar();
+    braceBalance--;
+    if (braceBalance < 0) {
+      throw new ParseException(token, "Unexpected closing brace");
+    }
+    return token;
+  }
+
+  private Token parseBraceOpen() {
+    Token token = new Token(currentColumnIndex, "(", BRACE_OPEN);
+    consumeChar();
+    braceBalance++;
+    return token;
   }
 
   private Token getPreviousToken() {

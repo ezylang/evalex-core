@@ -90,27 +90,10 @@ public class EvaluationValue implements Comparable<EvaluationValue> {
    * @throws IllegalArgumentException if the data type can't be mapped.
    */
   public EvaluationValue(Object value) {
-    if (value instanceof BigDecimal) {
+    BigDecimal number = convertToBigDecimal(value);
+    if (number != null) {
       this.dataType = DataType.NUMBER;
-      this.value = value;
-    } else if (value instanceof Double) {
-      this.dataType = DataType.NUMBER;
-      this.value = BigDecimal.valueOf((double) value);
-    } else if (value instanceof Float) {
-      this.dataType = DataType.NUMBER;
-      this.value = BigDecimal.valueOf((float) value);
-    } else if (value instanceof Integer) {
-      this.dataType = DataType.NUMBER;
-      this.value = BigDecimal.valueOf((int) value);
-    } else if (value instanceof Long) {
-      this.dataType = DataType.NUMBER;
-      this.value = BigDecimal.valueOf((long) value);
-    } else if (value instanceof Short) {
-      this.dataType = DataType.NUMBER;
-      this.value = BigDecimal.valueOf((short) value);
-    } else if (value instanceof Byte) {
-      this.dataType = DataType.NUMBER;
-      this.value = BigDecimal.valueOf((byte) value);
+      this.value = number;
     } else if (value instanceof CharSequence) {
       this.dataType = DataType.STRING;
       this.value = ((CharSequence) value).toString();
@@ -124,21 +107,65 @@ public class EvaluationValue implements Comparable<EvaluationValue> {
       this.dataType = DataType.EXPRESSION_NODE;
       this.value = value;
     } else if (value instanceof List) {
-      List<EvaluationValue> array = new ArrayList<>();
-      ((List<?>) value).forEach(element -> array.add(new EvaluationValue(element)));
-      dataType = DataType.ARRAY;
-      this.value = array;
+      this.dataType = DataType.ARRAY;
+      this.value = convertToList((List<?>) value);
     } else if (value instanceof Map) {
-      Map<String, EvaluationValue> structure = new HashMap<>();
-      for (Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
-        String name = entry.getKey().toString();
-        structure.put(name, new EvaluationValue(entry.getValue()));
-      }
-      dataType = DataType.STRUCTURE;
-      this.value = structure;
+      this.dataType = DataType.STRUCTURE;
+      this.value = convertMapStructure((Map<?, ?>) value);
     } else {
       throw new IllegalArgumentException(
           "Unsupported data type '" + value.getClass().getName() + "'");
+    }
+  }
+
+  /**
+   * Converts a {@link Map} of objects to a {@link Map} of {@link EvaluationValue} values.
+   *
+   * @return A {@link Map} of {@link EvaluationValue} values.
+   */
+  private Map<String, EvaluationValue> convertMapStructure(Map<?, ?> value) {
+    Map<String, EvaluationValue> structure = new HashMap<>();
+    for (Entry<?, ?> entry : value.entrySet()) {
+      String name = entry.getKey().toString();
+      structure.put(name, new EvaluationValue(entry.getValue()));
+    }
+    return structure;
+  }
+
+  /**
+   * Converts a {@link List} of objects to a {@link List} of {@link EvaluationValue} values.
+   *
+   * @return A {@link List} of {@link EvaluationValue} values.
+   */
+  private List<EvaluationValue> convertToList(List<?> value) {
+    List<EvaluationValue> array = new ArrayList<>();
+    value.forEach(element -> array.add(new EvaluationValue(element)));
+    return array;
+  }
+
+  /**
+   * Check and convert, if an {@link Object} can be converted to a {@link BigDecimal} value.
+   *
+   * @return A {@link BigDecimal} value of the object, or <code>null</code> if it can't be
+   *     converted.
+   */
+  private BigDecimal convertToBigDecimal(Object value) {
+    if (value instanceof BigDecimal) {
+      return (BigDecimal) value;
+    } else if (value instanceof Double) {
+      return BigDecimal.valueOf((double) value);
+    } else if (value instanceof Float) {
+      return BigDecimal.valueOf((float) value);
+    } else if (value instanceof Integer) {
+      return BigDecimal.valueOf((int) value);
+    } else if (value instanceof Long) {
+      return BigDecimal.valueOf((long) value);
+    } else if (value instanceof Short) {
+      return BigDecimal.valueOf((short) value);
+    } else if (value instanceof Byte) {
+      return BigDecimal.valueOf((byte) value);
+    } else {
+      return null;
     }
   }
 

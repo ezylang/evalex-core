@@ -36,8 +36,8 @@ class ExpressionEvaluatorPowerOfTest extends BaseExpressionEvaluatorTest {
             .powerOfPrecedence(OperatorIfc.OPERATOR_PRECEDENCE_POWER_HIGHER)
             .build();
 
-    Expression expresssion = new Expression("-2^2", config);
+    Expression expression = new Expression("-2^2", config);
 
-    assertThat(expresssion.evaluate().getStringValue()).isEqualTo("-4.0");
+    assertThat(expression.evaluate().getStringValue()).isEqualTo("-4.0");
   }
 }

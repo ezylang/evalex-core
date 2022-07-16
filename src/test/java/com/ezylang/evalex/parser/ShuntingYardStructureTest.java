@@ -15,6 +15,8 @@
 */
 package com.ezylang.evalex.parser;
 
+import com.ezylang.evalex.Expression;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ShuntingYardStructureTest extends BaseParserTest {
@@ -38,5 +40,21 @@ class ShuntingYardStructureTest extends BaseParserTest {
     assertASTTreeIsEqualTo(
         "order[4].position[2].amount",
         "{\"type\":\"STRUCTURE_SEPARATOR\",\"value\":\".\",\"children\":[{\"type\":\"ARRAY_INDEX\",\"value\":\"[\",\"children\":[{\"type\":\"STRUCTURE_SEPARATOR\",\"value\":\".\",\"children\":[{\"type\":\"ARRAY_INDEX\",\"value\":\"[\",\"children\":[{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"order\"},{\"type\":\"NUMBER_LITERAL\",\"value\":\"4\"}]},{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"position\"}]},{\"type\":\"NUMBER_LITERAL\",\"value\":\"2\"}]},{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"amount\"}]}");
+  }
+
+  @Test
+  void testExceptionStructureEnd() {
+    Expression expression = new Expression("a.");
+    Assertions.assertThatThrownBy(expression::getAbstractSyntaxTree)
+        .isInstanceOf(ParseException.class)
+        .hasMessage("Missing second operand for operator");
+  }
+
+  @Test
+  void testExceptionStructureStart() {
+    Expression expression = new Expression(".a");
+    Assertions.assertThatThrownBy(expression::getAbstractSyntaxTree)
+        .isInstanceOf(ParseException.class)
+        .hasMessage("Structure separator not allowed here");
   }
 }
