@@ -158,7 +158,8 @@ public class Expression {
   public ASTNode getAbstractSyntaxTree() throws ParseException {
     if (abstractSyntaxTree == null) {
       Tokenizer tokenizer = new Tokenizer(expressionString, configuration);
-      ShuntingYardConverter converter = new ShuntingYardConverter(tokenizer.parse(), configuration);
+      ShuntingYardConverter converter =
+          new ShuntingYardConverter(expressionString, tokenizer.parse(), configuration);
       abstractSyntaxTree = converter.toAbstractSyntaxTree();
     }
 

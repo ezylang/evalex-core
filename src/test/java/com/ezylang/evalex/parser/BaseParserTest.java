@@ -41,7 +41,8 @@ public abstract class BaseParserTest {
   void assertASTTreeIsEqualTo(String expression, String treeJSON) throws ParseException {
 
     List<Token> tokensParsed = new Tokenizer(expression, configuration).parse();
-    ASTNode root = new ShuntingYardConverter(tokensParsed, configuration).toAbstractSyntaxTree();
+    ASTNode root =
+        new ShuntingYardConverter(expression, tokensParsed, configuration).toAbstractSyntaxTree();
     assertThat(root.toJSON()).isEqualTo(treeJSON);
   }
 }

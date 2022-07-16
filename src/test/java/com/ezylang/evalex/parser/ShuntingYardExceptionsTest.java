@@ -17,9 +17,12 @@ package com.ezylang.evalex.parser;
 
 import static com.ezylang.evalex.parser.Token.TokenType.FUNCTION_PARAM_START;
 import static com.ezylang.evalex.parser.Token.TokenType.INFIX_OPERATOR;
+import static com.ezylang.evalex.parser.Token.TokenType.POSTFIX_OPERATOR;
 import static com.ezylang.evalex.parser.Token.TokenType.PREFIX_OPERATOR;
+import static com.ezylang.evalex.parser.Token.TokenType.STRUCTURE_SEPARATOR;
 import static com.ezylang.evalex.parser.Token.TokenType.VARIABLE_OR_CONSTANT;
 
+import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.operators.arithmetic.InfixMultiplicationOperator;
 import com.ezylang.evalex.operators.arithmetic.PrefixMinusOperator;
 import java.util.Arrays;
@@ -33,7 +36,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   void testUnexpectedToken() {
     List<Token> tokens = List.of(new Token(1, "x", FUNCTION_PARAM_START));
     Assertions.assertThatThrownBy(
-            new ShuntingYardConverter(tokens, configuration)::toAbstractSyntaxTree)
+            new ShuntingYardConverter("x", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Unexpected token of type 'FUNCTION_PARAM_START'");
   }
@@ -42,7 +45,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   void testMissingPrefixOperand() {
     List<Token> tokens = List.of(new Token(1, "-", PREFIX_OPERATOR, new PrefixMinusOperator()));
     Assertions.assertThatThrownBy(
-            new ShuntingYardConverter(tokens, configuration)::toAbstractSyntaxTree)
+            new ShuntingYardConverter("-", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Missing operand for operator");
   }
@@ -54,8 +57,59 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
             new Token(1, "2", VARIABLE_OR_CONSTANT),
             new Token(2, "*", INFIX_OPERATOR, new InfixMultiplicationOperator()));
     Assertions.assertThatThrownBy(
-            new ShuntingYardConverter(tokens, configuration)::toAbstractSyntaxTree)
+            new ShuntingYardConverter("2*", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Missing second operand for operator");
+  }
+
+  @Test
+  void testEmptyExpression() {
+    Expression expression = new Expression("");
+
+    Assertions.assertThatThrownBy(expression::evaluate)
+        .isInstanceOf(ParseException.class)
+        .hasMessage("Empty expression");
+  }
+
+  @Test
+  void testEmptyExpressionBraces() {
+    Expression expression = new Expression("()");
+
+    Assertions.assertThatThrownBy(expression::evaluate)
+        .isInstanceOf(ParseException.class)
+        .hasMessage("Empty expression");
+  }
+
+  @Test
+  void testDoubleStructureOperator() {
+    List<Token> tokens =
+        List.of(new Token(1, ".", STRUCTURE_SEPARATOR), new Token(2, ".", STRUCTURE_SEPARATOR));
+    Assertions.assertThatThrownBy(
+            new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
+        .isInstanceOf(ParseException.class)
+        .hasMessage("Missing operand for operator");
+  }
+
+  @Test
+  void testStructureFollowsPostfixOperator() {
+    List<Token> tokens =
+        List.of(new Token(1, ".", STRUCTURE_SEPARATOR), new Token(2, "!", POSTFIX_OPERATOR));
+    Assertions.assertThatThrownBy(
+            new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
+        .isInstanceOf(ParseException.class)
+        .hasMessage("Missing operand for operator");
+  }
+
+  @Test
+  void testStructureFollowsTwoPostfixOperators() {
+    List<Token> tokens =
+        List.of(
+            new Token(1, ".", STRUCTURE_SEPARATOR),
+            new Token(2, "!", POSTFIX_OPERATOR),
+            new Token(2, "!", POSTFIX_OPERATOR));
+    Assertions.assertThatThrownBy(
+            new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
+        .isInstanceOf(ParseException.class)
+        .hasMessage("Missing operand for operator");
   }
 }

@@ -33,13 +33,18 @@ public class ShuntingYardConverter {
 
   private final List<Token> expressionTokens;
 
+  private final String originalExpression;
+
   private final ExpressionConfiguration configuration;
 
   private final Deque<Token> operatorStack = new ArrayDeque<>();
   private final Deque<ASTNode> operandStack = new ArrayDeque<>();
 
   public ShuntingYardConverter(
-      List<Token> expressionTokens, ExpressionConfiguration configuration) {
+      String originalExpression,
+      List<Token> expressionTokens,
+      ExpressionConfiguration configuration) {
+    this.originalExpression = originalExpression;
     this.expressionTokens = expressionTokens;
     this.configuration = configuration;
   }
@@ -78,13 +83,7 @@ public class ShuntingYardConverter {
           processArrayClose();
           break;
         case STRUCTURE_SEPARATOR:
-          Token nextToken = operatorStack.isEmpty() ? null : operatorStack.peek();
-          while (nextToken != null && nextToken.getType() == STRUCTURE_SEPARATOR) {
-            Token token = operatorStack.pop();
-            createOperatorNode(token);
-            nextToken = operatorStack.isEmpty() ? null : operatorStack.peek();
-          }
-          operatorStack.push(currentToken);
+          processStructureSeparator(currentToken);
           break;
         default:
           throw new ParseException(
@@ -98,7 +97,21 @@ public class ShuntingYardConverter {
       createOperatorNode(token);
     }
 
+    if (operandStack.isEmpty()) {
+      throw new ParseException(this.originalExpression, "Empty expression");
+    }
+
     return operandStack.pop();
+  }
+
+  private void processStructureSeparator(Token currentToken) throws ParseException {
+    Token nextToken = operatorStack.isEmpty() ? null : operatorStack.peek();
+    while (nextToken != null && nextToken.getType() == STRUCTURE_SEPARATOR) {
+      Token token = operatorStack.pop();
+      createOperatorNode(token);
+      nextToken = operatorStack.isEmpty() ? null : operatorStack.peek();
+    }
+    operatorStack.push(currentToken);
   }
 
   private void processBraceOpen(Token previousToken, Token currentToken) {
@@ -179,7 +192,7 @@ public class ShuntingYardConverter {
 
   private void processOperatorsFromStackUntilTokenType(TokenType untilTokenType)
       throws ParseException {
-    while (!operatorStack.isEmpty() && operatorStack.peek().getType() != untilTokenType) {
+    while (operatorStack.peek().getType() != untilTokenType) { // NOSONAR - can't be null
       Token token = operatorStack.pop();
       createOperatorNode(token);
     }
@@ -219,15 +232,10 @@ public class ShuntingYardConverter {
   private boolean isNextOperatorOfHigherPrecedence(
       OperatorIfc currentOperator, OperatorIfc nextOperator) {
     // structure operator (null) has always a higher precedence than other operators
-    if (currentOperator == null && nextOperator != null) {
-      return false;
-    }
-    if (currentOperator != null && nextOperator == null) {
+    if (nextOperator == null) {
       return true;
     }
-    if (currentOperator == null && nextOperator == null) {
-      return false;
-    }
+
     if (currentOperator.isLeftAssociative()) {
       return currentOperator.getPrecedence(configuration)
           <= nextOperator.getPrecedence(configuration);

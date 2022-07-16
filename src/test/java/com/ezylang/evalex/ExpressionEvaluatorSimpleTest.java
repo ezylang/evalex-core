@@ -17,46 +17,11 @@ package com.ezylang.evalex;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.ezylang.evalex.config.ExpressionConfiguration;
-import com.ezylang.evalex.data.EvaluationValue;
-import com.ezylang.evalex.operators.AbstractOperator;
-import com.ezylang.evalex.operators.PostfixOperator;
 import com.ezylang.evalex.parser.ParseException;
-import com.ezylang.evalex.parser.Token;
-import java.math.BigDecimal;
-import java.util.Map;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class ExpressionEvaluatorSimpleTest extends BaseExpressionEvaluatorTest {
-
-  @PostfixOperator
-  public class PostfixFactorialOperator extends AbstractOperator {
-    @Override
-    public EvaluationValue evaluate(
-        Expression expression, Token operatorToken, EvaluationValue... operands)
-        throws EvaluationException {
-      int number = operands[0].getNumberValue().intValue();
-      BigDecimal factorial = BigDecimal.ONE;
-      for (int i = 1; i <= number; i++) {
-        factorial =
-            factorial.multiply(
-                new BigDecimal(i, expression.getConfiguration().getMathContext()),
-                expression.getConfiguration().getMathContext());
-      }
-      return new EvaluationValue(factorial);
-    }
-  }
-
-  @Test
-  void doc() throws EvaluationException, ParseException {
-    ExpressionConfiguration config =
-        ExpressionConfiguration.defaultConfiguration()
-            .withAdditionalOperators(Map.entry("!", new PostfixFactorialOperator()));
-    Expression expression = new Expression("2! + 3!");
-    System.out.println(expression.evaluate().getNumberValue()); // prints
-  }
 
   @ParameterizedTest
   @CsvSource(
@@ -119,6 +84,7 @@ class ExpressionEvaluatorSimpleTest extends BaseExpressionEvaluatorTest {
   @CsvSource(
       delimiter = ':',
       value = {
+        "(3) : 3",
         "(2+3)*2 : 10",
         "(2+3)*(2+2) : 20",
         "(2+6)/2+1 : 5",
