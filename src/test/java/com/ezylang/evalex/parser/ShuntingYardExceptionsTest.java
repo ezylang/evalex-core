@@ -21,13 +21,13 @@ import static com.ezylang.evalex.parser.Token.TokenType.POSTFIX_OPERATOR;
 import static com.ezylang.evalex.parser.Token.TokenType.PREFIX_OPERATOR;
 import static com.ezylang.evalex.parser.Token.TokenType.STRUCTURE_SEPARATOR;
 import static com.ezylang.evalex.parser.Token.TokenType.VARIABLE_OR_CONSTANT;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.operators.arithmetic.InfixMultiplicationOperator;
 import com.ezylang.evalex.operators.arithmetic.PrefixMinusOperator;
 import java.util.Arrays;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ShuntingYardExceptionsTest extends BaseParserTest {
@@ -35,8 +35,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   @Test
   void testUnexpectedToken() {
     List<Token> tokens = List.of(new Token(1, "x", FUNCTION_PARAM_START));
-    Assertions.assertThatThrownBy(
-            new ShuntingYardConverter("x", tokens, configuration)::toAbstractSyntaxTree)
+    assertThatThrownBy(new ShuntingYardConverter("x", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Unexpected token of type 'FUNCTION_PARAM_START'");
   }
@@ -44,8 +43,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   @Test
   void testMissingPrefixOperand() {
     List<Token> tokens = List.of(new Token(1, "-", PREFIX_OPERATOR, new PrefixMinusOperator()));
-    Assertions.assertThatThrownBy(
-            new ShuntingYardConverter("-", tokens, configuration)::toAbstractSyntaxTree)
+    assertThatThrownBy(new ShuntingYardConverter("-", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Missing operand for operator");
   }
@@ -56,8 +54,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
         Arrays.asList(
             new Token(1, "2", VARIABLE_OR_CONSTANT),
             new Token(2, "*", INFIX_OPERATOR, new InfixMultiplicationOperator()));
-    Assertions.assertThatThrownBy(
-            new ShuntingYardConverter("2*", tokens, configuration)::toAbstractSyntaxTree)
+    assertThatThrownBy(new ShuntingYardConverter("2*", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Missing second operand for operator");
   }
@@ -66,7 +63,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   void testEmptyExpression() {
     Expression expression = new Expression("");
 
-    Assertions.assertThatThrownBy(expression::evaluate)
+    assertThatThrownBy(expression::evaluate)
         .isInstanceOf(ParseException.class)
         .hasMessage("Empty expression");
   }
@@ -75,7 +72,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   void testEmptyExpressionBraces() {
     Expression expression = new Expression("()");
 
-    Assertions.assertThatThrownBy(expression::evaluate)
+    assertThatThrownBy(expression::evaluate)
         .isInstanceOf(ParseException.class)
         .hasMessage("Empty expression");
   }
@@ -84,8 +81,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   void testDoubleStructureOperator() {
     List<Token> tokens =
         List.of(new Token(1, ".", STRUCTURE_SEPARATOR), new Token(2, ".", STRUCTURE_SEPARATOR));
-    Assertions.assertThatThrownBy(
-            new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
+    assertThatThrownBy(new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Missing operand for operator");
   }
@@ -94,8 +90,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
   void testStructureFollowsPostfixOperator() {
     List<Token> tokens =
         List.of(new Token(1, ".", STRUCTURE_SEPARATOR), new Token(2, "!", POSTFIX_OPERATOR));
-    Assertions.assertThatThrownBy(
-            new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
+    assertThatThrownBy(new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Missing operand for operator");
   }
@@ -107,8 +102,7 @@ class ShuntingYardExceptionsTest extends BaseParserTest {
             new Token(1, ".", STRUCTURE_SEPARATOR),
             new Token(2, "!", POSTFIX_OPERATOR),
             new Token(2, "!", POSTFIX_OPERATOR));
-    Assertions.assertThatThrownBy(
-            new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
+    assertThatThrownBy(new ShuntingYardConverter("..", tokens, configuration)::toAbstractSyntaxTree)
         .isInstanceOf(ParseException.class)
         .hasMessage("Missing operand for operator");
   }

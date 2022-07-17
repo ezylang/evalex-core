@@ -15,12 +15,13 @@
 */
 package com.ezylang.evalex.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.ezylang.evalex.config.TestConfigurationProvider.PostfixQuestionOperator;
 import com.ezylang.evalex.config.TestConfigurationProvider.PrefixPlusPlusOperator;
 import com.ezylang.evalex.operators.OperatorIfc;
 import com.ezylang.evalex.operators.arithmetic.InfixModuloOperator;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class MapBasedOperatorDictionaryTest {
@@ -36,17 +37,17 @@ class MapBasedOperatorDictionaryTest {
         MapBasedOperatorDictionary.ofOperators(
             Map.entry("++", prefix), Map.entry("?", postfix), Map.entry("%", infix));
 
-    Assertions.assertThat(dictionary.hasPrefixOperator("++")).isTrue();
-    Assertions.assertThat(dictionary.hasPostfixOperator("?")).isTrue();
-    Assertions.assertThat(dictionary.hasInfixOperator("%")).isTrue();
+    assertThat(dictionary.hasPrefixOperator("++")).isTrue();
+    assertThat(dictionary.hasPostfixOperator("?")).isTrue();
+    assertThat(dictionary.hasInfixOperator("%")).isTrue();
 
-    Assertions.assertThat(dictionary.getPrefixOperator("++")).isEqualTo(prefix);
-    Assertions.assertThat(dictionary.getPostfixOperator("?")).isEqualTo(postfix);
-    Assertions.assertThat(dictionary.getInfixOperator("%")).isEqualTo(infix);
+    assertThat(dictionary.getPrefixOperator("++")).isEqualTo(prefix);
+    assertThat(dictionary.getPostfixOperator("?")).isEqualTo(postfix);
+    assertThat(dictionary.getInfixOperator("%")).isEqualTo(infix);
 
-    Assertions.assertThat(dictionary.hasPrefixOperator("A")).isFalse();
-    Assertions.assertThat(dictionary.hasPostfixOperator("B")).isFalse();
-    Assertions.assertThat(dictionary.hasInfixOperator("C")).isFalse();
+    assertThat(dictionary.hasPrefixOperator("A")).isFalse();
+    assertThat(dictionary.hasPostfixOperator("B")).isFalse();
+    assertThat(dictionary.hasInfixOperator("C")).isFalse();
   }
 
   @Test
@@ -62,16 +63,16 @@ class MapBasedOperatorDictionaryTest {
             Map.entry("Question", postfix),
             Map.entry("Percent", infix));
 
-    Assertions.assertThat(dictionary.hasPrefixOperator("PlusPlus")).isTrue();
-    Assertions.assertThat(dictionary.hasPrefixOperator("plusplus")).isTrue();
-    Assertions.assertThat(dictionary.hasPrefixOperator("PLUSPLUS")).isTrue();
+    assertThat(dictionary.hasPrefixOperator("PlusPlus")).isTrue();
+    assertThat(dictionary.hasPrefixOperator("plusplus")).isTrue();
+    assertThat(dictionary.hasPrefixOperator("PLUSPLUS")).isTrue();
 
-    Assertions.assertThat(dictionary.hasPostfixOperator("Question")).isTrue();
-    Assertions.assertThat(dictionary.hasPostfixOperator("question")).isTrue();
-    Assertions.assertThat(dictionary.hasPostfixOperator("QUESTION")).isTrue();
+    assertThat(dictionary.hasPostfixOperator("Question")).isTrue();
+    assertThat(dictionary.hasPostfixOperator("question")).isTrue();
+    assertThat(dictionary.hasPostfixOperator("QUESTION")).isTrue();
 
-    Assertions.assertThat(dictionary.hasInfixOperator("Percent")).isTrue();
-    Assertions.assertThat(dictionary.hasInfixOperator("percent")).isTrue();
-    Assertions.assertThat(dictionary.hasInfixOperator("PERCENT")).isTrue();
+    assertThat(dictionary.hasInfixOperator("Percent")).isTrue();
+    assertThat(dictionary.hasInfixOperator("percent")).isTrue();
+    assertThat(dictionary.hasInfixOperator("PERCENT")).isTrue();
   }
 }

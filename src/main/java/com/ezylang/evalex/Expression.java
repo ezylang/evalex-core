@@ -22,6 +22,7 @@ import com.ezylang.evalex.parser.ParseException;
 import com.ezylang.evalex.parser.ShuntingYardConverter;
 import com.ezylang.evalex.parser.Token;
 import com.ezylang.evalex.parser.Tokenizer;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -86,45 +87,63 @@ public class Expression {
    */
   public EvaluationValue evaluateSubtree(ASTNode startNode) throws EvaluationException {
     Token token = startNode.getToken();
+    EvaluationValue result;
     switch (token.getType()) {
       case NUMBER_LITERAL:
-        return EvaluationValue.numberOfString(token.getValue(), configuration.getMathContext());
+        result = EvaluationValue.numberOfString(token.getValue(), configuration.getMathContext());
+        break;
       case STRING_LITERAL:
-        return new EvaluationValue(token.getValue());
+        result = new EvaluationValue(token.getValue());
+        break;
       case VARIABLE_OR_CONSTANT:
-        return configuration.getDataAccessor().getData(token.getValue());
+        result = configuration.getDataAccessor().getData(token.getValue());
+        break;
       case PREFIX_OPERATOR:
       case POSTFIX_OPERATOR:
-        return token
-            .getOperatorDefinition()
-            .evaluate(this, token, evaluateSubtree(startNode.getParameters().get(0)));
+        result =
+            token
+                .getOperatorDefinition()
+                .evaluate(this, token, evaluateSubtree(startNode.getParameters().get(0)));
+        break;
       case INFIX_OPERATOR:
-        return token
-            .getOperatorDefinition()
-            .evaluate(
-                this,
-                token,
-                evaluateSubtree(startNode.getParameters().get(0)),
-                evaluateSubtree(startNode.getParameters().get(1)));
+        result =
+            token
+                .getOperatorDefinition()
+                .evaluate(
+                    this,
+                    token,
+                    evaluateSubtree(startNode.getParameters().get(0)),
+                    evaluateSubtree(startNode.getParameters().get(1)));
+        break;
       case ARRAY_INDEX:
-        return evaluateArrayIndex(startNode);
+        result = evaluateArrayIndex(startNode);
+        break;
       case STRUCTURE_SEPARATOR:
-        return evaluateStructureSeparator(startNode);
+        result = evaluateStructureSeparator(startNode);
+        break;
       case FUNCTION:
-        List<EvaluationValue> parameterResults = new ArrayList<>();
-        for (int i = 0; i < startNode.getParameters().size(); i++) {
-          if (token.getFunctionDefinition().isParameterLazy(i)) {
-            parameterResults.add(new EvaluationValue(startNode.getParameters().get(i)));
-          } else {
-            parameterResults.add(evaluateSubtree(startNode.getParameters().get(i)));
-          }
-        }
-        return token
-            .getFunctionDefinition()
-            .evaluate(this, token, parameterResults.toArray(new EvaluationValue[0]));
+        result = evaluateFunction(startNode, token);
+        break;
       default:
         throw new EvaluationException(token, "Unexpected evaluation token: " + token);
     }
+
+    return roundIfNeeded(result);
+  }
+
+  private EvaluationValue evaluateFunction(ASTNode startNode, Token token)
+      throws EvaluationException {
+    List<EvaluationValue> parameterResults = new ArrayList<>();
+    for (int i = 0; i < startNode.getParameters().size(); i++) {
+      if (token.getFunctionDefinition().isParameterLazy(i)) {
+        parameterResults.add(new EvaluationValue(startNode.getParameters().get(i)));
+      } else {
+        parameterResults.add(evaluateSubtree(startNode.getParameters().get(i)));
+      }
+    }
+    return token
+        .getFunctionDefinition()
+        .evaluate(this, token, parameterResults.toArray(new EvaluationValue[0]));
   }
 
   private EvaluationValue evaluateArrayIndex(ASTNode startNode) throws EvaluationException {
@@ -146,6 +165,28 @@ public class Expression {
       return structure.getStructureValue().get(name);
     } else {
       throw EvaluationException.ofUnsupportedDataTypeInOperation(startNode.getToken());
+    }
+  }
+
+  /**
+   * Rounds the given value, if it is a number and the decimal places are configured.
+   *
+   * @param value The input value.
+   * @return The rounded value, or the input value if rounding is not configured or possible.
+   */
+  private EvaluationValue roundIfNeeded(EvaluationValue value) {
+    if (value.isNumberValue()
+        && configuration.getDecimalPlacesRounding()
+            != ExpressionConfiguration.DECIMAL_PLACES_ROUNDING_UNLIMITED) {
+      BigDecimal rounded =
+          value
+              .getNumberValue()
+              .setScale(
+                  configuration.getDecimalPlacesRounding(),
+                  configuration.getMathContext().getRoundingMode());
+      return new EvaluationValue(rounded);
+    } else {
+      return value;
     }
   }
 

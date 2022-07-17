@@ -15,8 +15,9 @@
 */
 package com.ezylang.evalex.parser;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.ezylang.evalex.parser.Token.TokenType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TokenizerExpressionTest extends BaseParserTest {
@@ -53,7 +54,7 @@ class TokenizerExpressionTest extends BaseParserTest {
 
   @Test
   void testUndefinedOperator() {
-    Assertions.assertThatThrownBy(() -> new Tokenizer("a $ b", configuration).parse())
+    assertThatThrownBy(() -> new Tokenizer("a $ b", configuration).parse())
         .isEqualTo(new ParseException(3, 3, "$", "Undefined operator '$'"));
   }
 }

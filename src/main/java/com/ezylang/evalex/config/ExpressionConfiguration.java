@@ -147,6 +147,9 @@ public class ExpressionConfiguration {
   public static final Map<String, EvaluationValue> StandardConstants =
       Collections.unmodifiableMap(getStandardConstants());
 
+  /** Setting the decimal places to unlimited, will disable intermediate rounding. */
+  public static final int DECIMAL_PLACES_ROUNDING_UNLIMITED = -1;
+
   private static Map<String, EvaluationValue> getStandardConstants() {
 
     Map<String, EvaluationValue> constants = new HashMap<>();
@@ -218,6 +221,12 @@ public class ExpressionConfiguration {
    * OperatorIfc#OPERATOR_PRECEDENCE_POWER_HIGHER} or to a custom value.
    */
   @Builder.Default @Getter private int powerOfPrecedence = OperatorIfc.OPERATOR_PRECEDENCE_POWER;
+
+  /**
+   * If specified, all results from operations and functions will be rounded to the specified number
+   * of decimal digits, using the MathContexts rounding mode.
+   */
+  @Builder.Default @Getter private int decimalPlacesRounding = DECIMAL_PLACES_ROUNDING_UNLIMITED;
 
   /**
    * Convenience method to create a default configuration.

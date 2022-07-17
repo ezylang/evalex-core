@@ -49,6 +49,8 @@ class ExpressionConfigurationTest {
         .isEqualTo(OperatorIfc.OPERATOR_PRECEDENCE_POWER);
     assertThat(configuration.getDefaultConstants())
         .containsAllEntriesOf(ExpressionConfiguration.StandardConstants);
+    assertThat(configuration.getDecimalPlacesRounding())
+        .isEqualTo(ExpressionConfiguration.DECIMAL_PLACES_ROUNDING_UNLIMITED);
   }
 
   @Test

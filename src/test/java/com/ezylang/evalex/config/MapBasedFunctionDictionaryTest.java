@@ -15,11 +15,12 @@
 */
 package com.ezylang.evalex.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.ezylang.evalex.functions.FunctionIfc;
 import com.ezylang.evalex.functions.basic.MaxFunction;
 import com.ezylang.evalex.functions.basic.MinFunction;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class MapBasedFunctionDictionaryTest {
@@ -33,13 +34,13 @@ class MapBasedFunctionDictionaryTest {
     FunctionDictionaryIfc dictionary =
         MapBasedFunctionDictionary.ofFunctions(Map.entry("min", min), Map.entry("max", max));
 
-    Assertions.assertThat(dictionary.hasFunction("min")).isTrue();
-    Assertions.assertThat(dictionary.hasFunction("max")).isTrue();
+    assertThat(dictionary.hasFunction("min")).isTrue();
+    assertThat(dictionary.hasFunction("max")).isTrue();
 
-    Assertions.assertThat(dictionary.getFunction("min")).isEqualTo(min);
-    Assertions.assertThat(dictionary.getFunction("max")).isEqualTo(max);
+    assertThat(dictionary.getFunction("min")).isEqualTo(min);
+    assertThat(dictionary.getFunction("max")).isEqualTo(max);
 
-    Assertions.assertThat(dictionary.hasFunction("medium")).isFalse();
+    assertThat(dictionary.hasFunction("medium")).isFalse();
   }
 
   @Test
@@ -51,11 +52,11 @@ class MapBasedFunctionDictionaryTest {
     FunctionDictionaryIfc dictionary =
         MapBasedFunctionDictionary.ofFunctions(Map.entry("Min", min), Map.entry("MAX", max));
 
-    Assertions.assertThat(dictionary.hasFunction("min")).isTrue();
-    Assertions.assertThat(dictionary.hasFunction("MIN")).isTrue();
-    Assertions.assertThat(dictionary.hasFunction("Min")).isTrue();
-    Assertions.assertThat(dictionary.hasFunction("max")).isTrue();
-    Assertions.assertThat(dictionary.hasFunction("MAX")).isTrue();
-    Assertions.assertThat(dictionary.hasFunction("Max")).isTrue();
+    assertThat(dictionary.hasFunction("min")).isTrue();
+    assertThat(dictionary.hasFunction("MIN")).isTrue();
+    assertThat(dictionary.hasFunction("Min")).isTrue();
+    assertThat(dictionary.hasFunction("max")).isTrue();
+    assertThat(dictionary.hasFunction("MAX")).isTrue();
+    assertThat(dictionary.hasFunction("Max")).isTrue();
   }
 }

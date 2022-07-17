@@ -15,10 +15,11 @@
 */
 package com.ezylang.evalex.operators.arithmetic;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.ezylang.evalex.BaseEvaluationTest;
 import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.parser.ParseException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -43,7 +44,7 @@ class ArithmeticOperatorsTest extends BaseEvaluationTest {
         "+\"string\""
       })
   void testUnsupportedDataType(String expression) {
-    Assertions.assertThatThrownBy(() -> assertExpressionHasExpectedResult(expression, "0"))
+    assertThatThrownBy(() -> assertExpressionHasExpectedResult(expression, "0"))
         .isInstanceOf(EvaluationException.class)
         .hasMessage("Unsupported data types in operation");
   }
@@ -66,7 +67,7 @@ class ArithmeticOperatorsTest extends BaseEvaluationTest {
 
   @Test
   void testInfixDivisionByZero() {
-    Assertions.assertThatThrownBy(() -> assertExpressionHasExpectedResult("3/0", "0"))
+    assertThatThrownBy(() -> assertExpressionHasExpectedResult("3/0", "0"))
         .isInstanceOf(EvaluationException.class)
         .hasMessage("Division by zero");
   }
@@ -107,7 +108,7 @@ class ArithmeticOperatorsTest extends BaseEvaluationTest {
 
   @Test
   void testInfixModuloByZero() {
-    Assertions.assertThatThrownBy(() -> assertExpressionHasExpectedResult("3%0", "0"))
+    assertThatThrownBy(() -> assertExpressionHasExpectedResult("3%0", "0"))
         .isInstanceOf(EvaluationException.class)
         .hasMessage("Division by zero");
   }
