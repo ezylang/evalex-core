@@ -22,7 +22,5 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven and analyze with SonarCloud
-        run: mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent verify sonar:sonar -Dsonar.projectKey=evalex-core -Dsonar.organization=ezylang -Dsonar.host.url=https://sonarcloud.io
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Build with Maven
+        run: mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent verify
