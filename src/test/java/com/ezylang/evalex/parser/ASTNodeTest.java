@@ -15,11 +15,12 @@
 */
 package com.ezylang.evalex.parser;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.ezylang.evalex.functions.basic.MinFunction;
 import com.ezylang.evalex.operators.arithmetic.InfixPlusOperator;
 import com.ezylang.evalex.operators.arithmetic.PrefixMinusOperator;
 import com.ezylang.evalex.parser.Token.TokenType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ASTNodeTest {
@@ -29,7 +30,7 @@ class ASTNodeTest {
   void testJSONSingle() {
     ASTNode node = new ASTNode(variable);
 
-    Assertions.assertThat(node.toJSON())
+    assertThat(node.toJSON())
         .isEqualTo("{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"variable\"}");
   }
 
@@ -38,7 +39,7 @@ class ASTNodeTest {
     Token token = new Token(1, "-", TokenType.PREFIX_OPERATOR, new PrefixMinusOperator());
     ASTNode node = new ASTNode(token, new ASTNode(variable));
 
-    Assertions.assertThat(node.toJSON())
+    assertThat(node.toJSON())
         .isEqualTo(
             "{\"type\":\"PREFIX_OPERATOR\",\"value\":\"-\",\"children\":[{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"variable\"}]}");
   }
@@ -48,7 +49,7 @@ class ASTNodeTest {
     Token token = new Token(1, "+", TokenType.INFIX_OPERATOR, new InfixPlusOperator());
     ASTNode node = new ASTNode(token, new ASTNode(variable), new ASTNode(variable));
 
-    Assertions.assertThat(node.toJSON())
+    assertThat(node.toJSON())
         .isEqualTo(
             "{\"type\":\"INFIX_OPERATOR\",\"value\":\"+\",\"children\":[{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"variable\"},{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"variable\"}]}");
   }
@@ -59,7 +60,7 @@ class ASTNodeTest {
     ASTNode node =
         new ASTNode(token, new ASTNode(variable), new ASTNode(variable), new ASTNode(variable));
 
-    Assertions.assertThat(node.toJSON())
+    assertThat(node.toJSON())
         .isEqualTo(
             "{\"type\":\"FUNCTION\",\"value\":\"+\",\"children\":[{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"variable\"},{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"variable\"},{\"type\":\"VARIABLE_OR_CONSTANT\",\"value\":\"variable\"}]}");
   }

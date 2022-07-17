@@ -14,6 +14,7 @@ Key Features:
 - Array and structure support: Arrays and structures can be mixed, building arbitrary data
   structures.
 - Uses BigDecimal for numerical calculations.
+- MathContext and number of decimal places can be configured, with automatic rounding.
 - No dependencies to external libraries.
 - Easy integration into existing systems to access data.
 - Standard boolean and mathematical operators.

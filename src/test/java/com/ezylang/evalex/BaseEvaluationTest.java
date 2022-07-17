@@ -15,17 +15,18 @@
 */
 package com.ezylang.evalex;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.ezylang.evalex.config.ExpressionConfiguration;
 import com.ezylang.evalex.config.TestConfigurationProvider;
 import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.parser.ParseException;
-import org.assertj.core.api.Assertions;
 
 public abstract class BaseEvaluationTest {
 
   protected void assertExpressionHasExpectedResult(String expression, String expectedResult)
       throws EvaluationException, ParseException {
-    Assertions.assertThat(
+    assertThat(
             evaluate(
                     expression,
                     TestConfigurationProvider.StandardConfigurationWithAdditionalTestOperators)
@@ -36,7 +37,7 @@ public abstract class BaseEvaluationTest {
   protected void assertExpressionHasExpectedResult(
       String expression, String expectedResult, ExpressionConfiguration expressionConfiguration)
       throws EvaluationException, ParseException {
-    Assertions.assertThat(evaluate(expression, expressionConfiguration).getStringValue())
+    assertThat(evaluate(expression, expressionConfiguration).getStringValue())
         .isEqualTo(expectedResult);
   }
 

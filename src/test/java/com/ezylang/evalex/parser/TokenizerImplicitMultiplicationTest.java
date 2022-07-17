@@ -15,9 +15,10 @@
 */
 package com.ezylang.evalex.parser;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.ezylang.evalex.config.ExpressionConfiguration;
 import com.ezylang.evalex.parser.Token.TokenType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TokenizerImplicitMultiplicationTest extends BaseParserTest {
@@ -55,7 +56,7 @@ class TokenizerImplicitMultiplicationTest extends BaseParserTest {
     ExpressionConfiguration config =
         ExpressionConfiguration.builder().implicitMultiplicationAllowed(false).build();
 
-    Assertions.assertThatThrownBy(() -> new Tokenizer("2(x+y)", config).parse())
+    assertThatThrownBy(() -> new Tokenizer("2(x+y)", config).parse())
         .isEqualTo(new ParseException(2, 2, "(", "Missing operator"));
   }
 }

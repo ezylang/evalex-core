@@ -15,10 +15,11 @@
 */
 package com.ezylang.evalex;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.ezylang.evalex.parser.ASTNode;
 import com.ezylang.evalex.parser.Token;
 import com.ezylang.evalex.parser.Token.TokenType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ExpressionEvaluationExceptionsTest {
@@ -27,7 +28,7 @@ class ExpressionEvaluationExceptionsTest {
   void testUnexpectedToken() {
     Expression expression = new Expression("1");
 
-    Assertions.assertThatThrownBy(
+    assertThatThrownBy(
             () -> {
               ASTNode node = new ASTNode(new Token(1, "(", TokenType.BRACE_OPEN));
               expression.evaluateSubtree(node);

@@ -15,9 +15,10 @@
 */
 package com.ezylang.evalex.parser;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.ezylang.evalex.config.ExpressionConfiguration;
 import com.ezylang.evalex.parser.Token.TokenType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TokenizerStructureTest extends BaseParserTest {
@@ -33,13 +34,13 @@ class TokenizerStructureTest extends BaseParserTest {
 
   @Test
   void testStructureSeparatorNotAllowedBegin() {
-    Assertions.assertThatThrownBy(() -> new Tokenizer(".", configuration).parse())
+    assertThatThrownBy(() -> new Tokenizer(".", configuration).parse())
         .isEqualTo(new ParseException(1, 1, ".", "Structure separator not allowed here"));
   }
 
   @Test
   void testStructureSeparatorNotAllowedOperator() {
-    Assertions.assertThatThrownBy(() -> new Tokenizer("-.", configuration).parse())
+    assertThatThrownBy(() -> new Tokenizer("-.", configuration).parse())
         .isEqualTo(new ParseException(2, 2, ".", "Structure separator not allowed here"));
   }
 
@@ -48,7 +49,7 @@ class TokenizerStructureTest extends BaseParserTest {
     ExpressionConfiguration config =
         ExpressionConfiguration.builder().structuresAllowed(false).build();
 
-    Assertions.assertThatThrownBy(() -> new Tokenizer("a.b", config).parse())
+    assertThatThrownBy(() -> new Tokenizer("a.b", config).parse())
         .isEqualTo(new ParseException(2, 2, ".", "Undefined operator '.'"));
   }
 }

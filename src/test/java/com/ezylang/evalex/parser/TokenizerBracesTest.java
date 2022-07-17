@@ -15,8 +15,9 @@
 */
 package com.ezylang.evalex.parser;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.ezylang.evalex.parser.Token.TokenType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TokenizerBracesTest extends BaseParserTest {
@@ -50,13 +51,13 @@ class TokenizerBracesTest extends BaseParserTest {
 
   @Test
   void testMissingClosingBrace() {
-    Assertions.assertThatThrownBy(() -> new Tokenizer("(2+4", configuration).parse())
+    assertThatThrownBy(() -> new Tokenizer("(2+4", configuration).parse())
         .isEqualTo(new ParseException(1, 4, "(2+4", "Closing brace not found"));
   }
 
   @Test
   void testUnexpectedClosingBrace() {
-    Assertions.assertThatThrownBy(() -> new Tokenizer("(2+4))", configuration).parse())
+    assertThatThrownBy(() -> new Tokenizer("(2+4))", configuration).parse())
         .isEqualTo(new ParseException(6, 6, ")", "Unexpected closing brace"));
   }
 }

@@ -15,9 +15,10 @@
 */
 package com.ezylang.evalex.parser;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.ezylang.evalex.config.TestConfigurationProvider.DummyFunction;
 import com.ezylang.evalex.parser.Token.TokenType;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TokenizerFunctionsTest extends BaseParserTest {
@@ -135,7 +136,7 @@ class TokenizerFunctionsTest extends BaseParserTest {
 
   @Test
   void testUndefinedFunction() {
-    Assertions.assertThatThrownBy(() -> new Tokenizer("a(b)", configuration).parse())
+    assertThatThrownBy(() -> new Tokenizer("a(b)", configuration).parse())
         .isEqualTo(new ParseException(1, 2, "a", "Undefined function 'a'"));
   }
 }
