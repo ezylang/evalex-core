@@ -29,6 +29,16 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+/**
+ * The shunting yard algorithm can be used to convert a mathematical expression from an infix
+ * notation into either a postfix notation (RPN, reverse polish notation), or into an abstract
+ * syntax tree (AST).
+ *
+ * <p>Here it is used to parse and convert a list of already parsed expression tokens into an AST.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Shunting_yard_algorithm">Shunting yard algorithm</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">Abstract syntax tree</a>
+ */
 public class ShuntingYardConverter {
 
   private final List<Token> expressionTokens;
@@ -119,7 +129,7 @@ public class ShuntingYardConverter {
       // start of parameter list, marker for variable number of arguments
       Token paramStart =
           new Token(
-              currentToken.getStartColumn(),
+              currentToken.getStartPosition(),
               currentToken.getValue(),
               TokenType.FUNCTION_PARAM_START);
       operandStack.push(new ASTNode(paramStart));
@@ -160,7 +170,7 @@ public class ShuntingYardConverter {
     }
     // create ARRAY_INDEX operator (just like a function name) and push it to the operator stack
     Token arrayIndex =
-        new Token(currentToken.getStartColumn(), currentToken.getValue(), ARRAY_INDEX);
+        new Token(currentToken.getStartPosition(), currentToken.getValue(), ARRAY_INDEX);
     operatorStack.push(arrayIndex);
 
     // push the ARRAY_OPEN to the operators, too (to later match the ARRAY_CLOSE)
@@ -192,7 +202,7 @@ public class ShuntingYardConverter {
 
   private void processOperatorsFromStackUntilTokenType(TokenType untilTokenType)
       throws ParseException {
-    while (operatorStack.peek().getType() != untilTokenType) { // NOSONAR - can't be null
+    while (!operatorStack.isEmpty() && operatorStack.peek().getType() != untilTokenType) {
       Token token = operatorStack.pop();
       createOperatorNode(token);
     }

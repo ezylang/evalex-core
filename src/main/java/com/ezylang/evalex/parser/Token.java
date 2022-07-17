@@ -22,6 +22,13 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
 
+/**
+ * A token represents a singe part of an expression, like an operator, number literal, or a brace.
+ * Each token has a unique type, a value (its representation) and a position (starting with 1) in
+ * the original expression string.
+ *
+ * <p>For operators and functions, the operator and function definition is also set during parsing.
+ */
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(doNotUseGetters = true)
@@ -45,7 +52,7 @@ public class Token {
     STRUCTURE_SEPARATOR
   }
 
-  int startColumn;
+  int startPosition;
 
   String value;
 
@@ -55,15 +62,15 @@ public class Token {
 
   @EqualsAndHashCode.Exclude @ToString.Exclude OperatorIfc operatorDefinition;
 
-  public Token(int startColumn, String value, TokenType type) {
-    this(startColumn, value, type, null, null);
+  public Token(int startPosition, String value, TokenType type) {
+    this(startPosition, value, type, null, null);
   }
 
-  public Token(int startColumn, String value, TokenType type, FunctionIfc functionDefinition) {
-    this(startColumn, value, type, functionDefinition, null);
+  public Token(int startPosition, String value, TokenType type, FunctionIfc functionDefinition) {
+    this(startPosition, value, type, functionDefinition, null);
   }
 
-  public Token(int startColumn, String value, TokenType type, OperatorIfc operatorDefinition) {
-    this(startColumn, value, type, null, operatorDefinition);
+  public Token(int startPosition, String value, TokenType type, OperatorIfc operatorDefinition) {
+    this(startPosition, value, type, null, operatorDefinition);
   }
 }

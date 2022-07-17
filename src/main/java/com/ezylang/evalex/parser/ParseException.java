@@ -32,8 +32,8 @@ public class ParseException extends BaseException {
 
   public ParseException(Token token, String message) {
     super(
-        token.getStartColumn(),
-        token.getStartColumn() + token.getValue().length() - 1,
+        token.getStartPosition(),
+        token.getStartPosition() + token.getValue().length() - 1,
         token.getValue(),
         message);
   }

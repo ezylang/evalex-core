@@ -37,8 +37,10 @@ import lombok.Value;
 @Value
 public class ASTNode {
 
+  /** The children od the tree. */
   List<ASTNode> parameters;
 
+  /** The token associated with this tree node. */
   Token token;
 
   public ASTNode(Token token, ASTNode... parameters) {

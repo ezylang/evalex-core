@@ -152,7 +152,7 @@ class ExpressionConfigurationTest {
   }
 
   @Test
-  void testPowerOfPrecedece() {
+  void testPowerOfPrecedence() {
     ExpressionConfiguration configuration =
         ExpressionConfiguration.builder()
             .powerOfPrecedence(OperatorIfc.OPERATOR_PRECEDENCE_POWER_HIGHER)
