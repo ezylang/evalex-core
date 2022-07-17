@@ -204,7 +204,7 @@ class EvaluationValueTest {
 
     assertDataIsCorrect(
         value,
-        "ASTNode(parameters=[], token=Token(startColumn=1, value=a, type=VARIABLE_OR_CONSTANT))",
+        "ASTNode(parameters=[], token=Token(startPosition=1, value=a, type=VARIABLE_OR_CONSTANT))",
         BigDecimal.ZERO,
         false,
         ASTNode.class);

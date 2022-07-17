@@ -36,7 +36,7 @@ class TokenTest {
       Token token = new Token(counter, tokenString, type);
 
       assertThat(token.getType()).isEqualTo(type);
-      assertThat(token.getStartColumn()).isEqualTo(counter);
+      assertThat(token.getStartPosition()).isEqualTo(counter);
       assertThat(token.getValue()).isEqualTo(tokenString);
       assertThat(token.getFunctionDefinition()).isNull();
       assertThat(token.getOperatorDefinition()).isNull();
@@ -52,7 +52,7 @@ class TokenTest {
             TokenType.FUNCTION,
             expressionConfiguration.getFunctionDictionary().getFunction("MAX"));
 
-    assertThat(token.getStartColumn()).isEqualTo(3);
+    assertThat(token.getStartPosition()).isEqualTo(3);
     assertThat(token.getValue()).isEqualTo("MAX");
     assertThat(token.getType()).isEqualTo(TokenType.FUNCTION);
     assertThat(token.getFunctionDefinition()).isNotNull();
@@ -68,7 +68,7 @@ class TokenTest {
             TokenType.INFIX_OPERATOR,
             expressionConfiguration.getOperatorDictionary().getInfixOperator("+"));
 
-    assertThat(token.getStartColumn()).isEqualTo(1);
+    assertThat(token.getStartPosition()).isEqualTo(1);
     assertThat(token.getValue()).isEqualTo("+");
     assertThat(token.getType()).isEqualTo(TokenType.INFIX_OPERATOR);
     assertThat(token.getFunctionDefinition()).isNull();

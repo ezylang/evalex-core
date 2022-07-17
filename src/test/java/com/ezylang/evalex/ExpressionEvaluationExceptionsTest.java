@@ -33,6 +33,7 @@ class ExpressionEvaluationExceptionsTest {
               expression.evaluateSubtree(node);
             })
         .isInstanceOf(EvaluationException.class)
-        .hasMessage("Unexpected evaluation token: Token(startColumn=1, value=(, type=BRACE_OPEN)");
+        .hasMessage(
+            "Unexpected evaluation token: Token(startPosition=1, value=(, type=BRACE_OPEN)");
   }
 }

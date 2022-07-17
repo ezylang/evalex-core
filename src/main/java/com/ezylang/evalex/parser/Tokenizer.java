@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * The tokenizer is responsible to parse a string and return a list of tokens. The order of tokens
- * will follow the infix expression notation, skipping any lank characters.
+ * will follow the infix expression notation, skipping any blank characters.
  */
 public class Tokenizer {
 
@@ -58,7 +58,7 @@ public class Tokenizer {
   }
 
   /**
-   * Parse the given expression and return a list of tokens, representing the expressio.
+   * Parse the given expression and return a list of tokens, representing the expression.
    *
    * @return A list of expression tokens.
    * @throws ParseException When the expression can't be parsed.
@@ -69,7 +69,7 @@ public class Tokenizer {
       if (currentToken.getType() == BRACE_OPEN && implicitMultiplicationPossible()) {
         if (configuration.isImplicitMultiplicationAllowed()) {
           Token multiplication =
-              new Token(currentToken.getStartColumn(), "*", TokenType.INFIX_OPERATOR);
+              new Token(currentToken.getStartPosition(), "*", TokenType.INFIX_OPERATOR);
           tokens.add(multiplication);
         } else {
           throw new ParseException(currentToken, "Missing operator");
