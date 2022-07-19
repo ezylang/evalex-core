@@ -97,6 +97,9 @@ public class Expression {
         break;
       case VARIABLE_OR_CONSTANT:
         result = configuration.getDataAccessor().getData(token.getValue());
+        if (result.isExpressionNode()) {
+          result = evaluateSubtree(result.getExpressionNode());
+        }
         break;
       case PREFIX_OPERATOR:
       case POSTFIX_OPERATOR:
@@ -241,5 +244,20 @@ public class Expression {
    */
   public Expression and(String variable, Object value) {
     return with(variable, value);
+  }
+
+  /**
+   * Create an AST representation for an expression string. The node can then be used as a
+   * sub-expression. Subexpressions are not cached.
+   *
+   * @param expression The expression string.
+   * @return The root node of the expression AST representation.
+   * @throws ParseException On any parsing error.
+   */
+  public ASTNode createExpressionNode(String expression) throws ParseException {
+    Tokenizer tokenizer = new Tokenizer(expression, configuration);
+    ShuntingYardConverter converter =
+        new ShuntingYardConverter(expression, tokenizer.parse(), configuration);
+    return converter.toAbstractSyntaxTree();
   }
 }
