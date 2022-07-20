@@ -21,7 +21,6 @@ import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
-import java.math.BigDecimal;
 
 /**
  * Conditional evaluation function. If parameter <code>condition</code> is <code>true</code>, the
@@ -37,11 +36,10 @@ public class IfFunction extends AbstractFunction {
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues)
       throws EvaluationException {
-    BigDecimal condition = parameterValues[0].getNumberValue();
-    if (condition.equals(BigDecimal.ZERO)) {
-      return expression.evaluateSubtree(parameterValues[2].getExpressionNode());
-    } else {
+    if (parameterValues[0].getBooleanValue()) {
       return expression.evaluateSubtree(parameterValues[1].getExpressionNode());
+    } else {
+      return expression.evaluateSubtree(parameterValues[2].getExpressionNode());
     }
   }
 }
