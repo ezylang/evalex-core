@@ -247,6 +247,24 @@ public class Expression {
   }
 
   /**
+   * Adds all variables values defined in the map with their name (key) and value to the data
+   * storage.If a value with the same name already exists, it is overridden. The data type will be
+   * determined by examining the passed value object. An exception is thrown, if he found data type
+   * is not supported.
+   *
+   * @param values A map with variable values.
+   * @return The Expression instance, to allow chaining of methods.
+   */
+  public Expression withValues(Map<String, Object> values) {
+    for (Map.Entry<String, Object> entry : values.entrySet()) {
+      configuration
+          .getDataAccessor()
+          .setData(entry.getKey(), new EvaluationValue(entry.getValue()));
+    }
+    return this;
+  }
+
+  /**
    * Create an AST representation for an expression string. The node can then be used as a
    * sub-expression. Subexpressions are not cached.
    *

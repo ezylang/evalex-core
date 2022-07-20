@@ -22,6 +22,8 @@ import com.ezylang.evalex.config.ExpressionConfiguration;
 import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.parser.ASTNode;
 import com.ezylang.evalex.parser.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class ExpressionTest {
@@ -62,5 +64,18 @@ class ExpressionTest {
     EvaluationValue result = expression.with("a", 2).and("b", subExpression).evaluate();
 
     assertThat(result.getStringValue()).isEqualTo("14");
+  }
+
+  @Test
+  void testWithValues() throws ParseException, EvaluationException {
+    Expression expression = new Expression("(a + b) * (a - b)");
+
+    Map<String, Object> values = new HashMap<>();
+    values.put("a", 3.5);
+    values.put("b", 2.5);
+
+    EvaluationValue result = expression.withValues(values).evaluate();
+
+    assertThat(result.getStringValue()).isEqualTo("6.00");
   }
 }
