@@ -21,12 +21,15 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
-/** Converts the given input string to upper case. */
-@FunctionParameter(name = "value")
-public class UpperFunction extends AbstractFunction {
+/** Returns true, if the string contains the substring (case-insensitive). */
+@FunctionParameter(name = "string")
+@FunctionParameter(name = "substring")
+public class StringContains extends AbstractFunction {
   @Override
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
-    return new EvaluationValue(parameterValues[0].getStringValue().toUpperCase());
+    String string = parameterValues[0].getStringValue();
+    String substring = parameterValues[1].getStringValue();
+    return new EvaluationValue(string.toUpperCase().contains(substring.toUpperCase()));
   }
 }

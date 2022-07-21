@@ -33,7 +33,9 @@ import com.ezylang.evalex.functions.basic.RandomFunction;
 import com.ezylang.evalex.functions.basic.RoundFunction;
 import com.ezylang.evalex.functions.basic.SqrtFunction;
 import com.ezylang.evalex.functions.basic.SumFunction;
-import com.ezylang.evalex.functions.string.UpperFunction;
+import com.ezylang.evalex.functions.string.StringContains;
+import com.ezylang.evalex.functions.string.StringLowerFunction;
+import com.ezylang.evalex.functions.string.StringUpperFunction;
 import com.ezylang.evalex.functions.trigonometric.CosFunction;
 import com.ezylang.evalex.functions.trigonometric.DegFunction;
 import com.ezylang.evalex.functions.trigonometric.RadFunction;
@@ -131,18 +133,20 @@ public class ExpressionConfiguration {
           Map.entry("MAX", new MaxFunction()),
           Map.entry("MIN", new MinFunction()),
           Map.entry("NOT", new NotFunction()),
+          Map.entry("RANDOM", new RandomFunction()),
           Map.entry("ROUND", new RoundFunction()),
           Map.entry("SUM", new SumFunction()),
           Map.entry("SQRT", new SqrtFunction()),
-          Map.entry("RANDOM", new RandomFunction()),
           // trigonometric
+          Map.entry("COS", new CosFunction()),
           Map.entry("DEG", new DegFunction()),
           Map.entry("RAD", new RadFunction()),
           Map.entry("SIN", new SinFunction()),
-          Map.entry("COS", new CosFunction()),
           Map.entry("TAN", new TanFunction()),
           // string functions
-          Map.entry("STR_UPPER", new UpperFunction()));
+          Map.entry("STR_CONTAINS", new StringContains()),
+          Map.entry("STR_LOWER", new StringLowerFunction()),
+          Map.entry("STR_UPPER", new StringUpperFunction()));
 
   public static final Map<String, EvaluationValue> StandardConstants =
       Collections.unmodifiableMap(getStandardConstants());

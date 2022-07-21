@@ -38,4 +38,37 @@ class StringFunctionsTest extends BaseEvaluationTest {
       throws EvaluationException, ParseException {
     assertExpressionHasExpectedResult(expression, expectedResult);
   }
+
+  @ParameterizedTest
+  @CsvSource(
+      delimiter = ':',
+      value = {
+        "STR_LOWER(\"\") : ''",
+        "STR_LOWER(\"A\") : a",
+        "STR_LOWER(\"a\") : a",
+        "STR_LOWER(\"AbCdEf\") : abcdef",
+        "STR_LOWER(\"A1b3C4/?\") : a1b3c4/?",
+        "STR_LOWER(\"ÄÖÜSS\") : äöüss"
+      })
+  void testLower(String expression, String expectedResult)
+      throws EvaluationException, ParseException {
+    assertExpressionHasExpectedResult(expression, expectedResult);
+  }
+
+  @ParameterizedTest
+  @CsvSource(
+      delimiter = ':',
+      value = {
+        "STR_CONTAINS(\"\", \"\") : true",
+        "STR_CONTAINS(\"a\", \"a\") : true",
+        "STR_CONTAINS(\"Hello World\", \"Wor\") : true",
+        "STR_CONTAINS(\"What a world\", \"what\") : true",
+        "STR_CONTAINS(\"What a world\", \"a world\") : true",
+        "STR_CONTAINS(\"What a world\", \"moon\") : false",
+        "STR_CONTAINS(\"\", \"text\") : false"
+      })
+  void testContains(String expression, String expectedResult)
+      throws EvaluationException, ParseException {
+    assertExpressionHasExpectedResult(expression, expectedResult);
+  }
 }

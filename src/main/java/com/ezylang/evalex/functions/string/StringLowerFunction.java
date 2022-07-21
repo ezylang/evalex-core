@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 */
-package com.ezylang.evalex.functions.basic;
+package com.ezylang.evalex.functions.string;
 
 import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.data.EvaluationValue;
@@ -21,15 +21,12 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
-/** Absolute (non-negative) value. */
+/** Converts the given value to lower case. */
 @FunctionParameter(name = "value")
-public class AbsFunction extends AbstractFunction {
-
+public class StringLowerFunction extends AbstractFunction {
   @Override
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
-
-    return new EvaluationValue(
-        parameterValues[0].getNumberValue().abs(expression.getConfiguration().getMathContext()));
+    return new EvaluationValue(parameterValues[0].getStringValue().toLowerCase());
   }
 }

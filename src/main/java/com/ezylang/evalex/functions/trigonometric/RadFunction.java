@@ -24,7 +24,7 @@ import com.ezylang.evalex.parser.Token;
 /**
  * Converts an angle measured in degrees to an approximately equivalent angle measured in radians.
  */
-@FunctionParameter(name = "deg")
+@FunctionParameter(name = "degrees")
 public class RadFunction extends AbstractFunction {
   @Override
   public EvaluationValue evaluate(

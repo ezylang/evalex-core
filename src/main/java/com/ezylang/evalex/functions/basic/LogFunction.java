@@ -22,7 +22,7 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
-/** Returns the natural logarithm (base e) of a value */
+/** The natural logarithm (base e) of a value */
 @FunctionParameter(name = "value")
 public class LogFunction extends AbstractFunction {
   @Override

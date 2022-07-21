@@ -22,7 +22,7 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
-/** Returns the base 10 logarithm of a value */
+/** The base 10 logarithm of a value */
 @FunctionParameter(name = "value")
 public class Log10Function extends AbstractFunction {
   @Override
