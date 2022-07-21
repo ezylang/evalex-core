@@ -6,8 +6,6 @@ EvalEx - Java Expression Evaluator
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=evalex-core&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=evalex-core)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=evalex-core&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=evalex-core)
 
-# EvalEx - Java Expression Evaluator
-
 EvalEx is a handy expression evaluator for Java, that allows to parse and evaluate expression
 strings.
 
