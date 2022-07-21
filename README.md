@@ -41,7 +41,7 @@ the [Discussions area](https://github.com/ezylang/evalex-core/discussions).
 
 ## Examples
 
-A simple example, that shows how it works in general:
+### A simple example, that shows how it works in general:
 
 ```java
 Expression expression = new Expression("1 + 2 / (4 * SQRT(4))");
@@ -51,8 +51,7 @@ EvaluationValue result = expression.evaluate();
 System.out.println(result.getNumberValue()); // prints 1.25
 ```
 
-Of course, variables can be specified in the expression and their values can be passed for
-evaluation:
+### Variables can be specified in the expression and their values can be passed for evaluation:
 
 ```java
 Expression expression = new Expression("(a + b) * (a - b)");
@@ -65,7 +64,7 @@ EvaluationValue result = expression
 System.out.println(result.getNumberValue()); // prints 6.00
 ```
 
-Boolean expressions produce a boolean result:
+### Boolean expressions produce a boolean result:
 
 ```java
 Expression expression = new Expression("level > 2 || level <= 0");
@@ -77,7 +76,7 @@ EvaluationValue result = expression
 System.out.println(result.getBooleanValue()); // prints true
 ```
 
-Like in Java, strings and text can be mixed:
+### Like in Java, strings and text can be mixed:
 
 ```java
 Expression expression = new Expression("\"Hello \" + name + \", you are \" + age")
@@ -87,7 +86,7 @@ Expression expression = new Expression("\"Hello \" + name + \", you are \" + age
 System.out.println(expression.evaluate().getStringValue()); // prints Hello Frank, you are 38
 ```
 
-Arrays are supported and can be passed as Java _Lists_.
+### Arrays are supported and can be passed as Java _Lists_.
 See the [Documentation](https://ezylang.github.io/pages-playground/concepts/datatypes.html#array)
 for more details.
 
@@ -103,7 +102,7 @@ EvaluationValue result = expression
 System.out.println(result.getNumberValue()); // prints 4
 ```
 
-Structures are supported and can be passed as Java _Maps_.
+### Structures are supported and can be passed as Java _Maps_.
 Arrays and Structures can be combined to build arbitrary data structures. See
 the [Documentation](https://ezylang.github.io/pages-playground/concepts/datatypes.html#structure)
 for more details.
