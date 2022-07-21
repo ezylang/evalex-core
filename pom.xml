@@ -111,7 +111,7 @@
               <reflowLongStrings>true</reflowLongStrings>
             </googleJavaFormat>
             <licenseHeader>
-              <file>${basedir}/license-header.txt</file>
+              <file>${basedir}/spotless-header.txt</file>
             </licenseHeader>
           </java>
         </configuration>

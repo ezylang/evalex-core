@@ -6,120 +6,130 @@ EvalEx - Java Expression Evaluator
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=evalex-core&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=evalex-core)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=evalex-core&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=evalex-core)
 
-EvalEx is a handy expression evaluator for Java, that allows to evaluate expressions.
+# EvalEx - Java Expression Evaluator
 
-Key Features:
+EvalEx is a handy expression evaluator for Java, that allows to parse and evaluate expression
+strings.
 
-- Supports string, boolean and numerical, array and structure expressions and variables.
+## Key Features:
+
+- Supports numerical, boolean, string, array and structure expressions, operations and variables.
 - Array and structure support: Arrays and structures can be mixed, building arbitrary data
   structures.
 - Uses BigDecimal for numerical calculations.
-- MathContext and number of decimal places can be configured, with automatic rounding.
+- MathContext and number of decimal places can be configured, with optional automatic rounding.
 - No dependencies to external libraries.
 - Easy integration into existing systems to access data.
-- Standard boolean and mathematical operators.
-- Standard basic mathematical and boolean functions.
+- Predefined boolean and mathematical operators.
+- Predefined mathematical, boolean and string functions.
 - Custom functions and operators can be added.
 - Functions can be defined with a variable number of arguments (see MIN, MAX and SUM functions).
-- Supports for hexadecimal numbers and scientific notations of numbers.
+- Supports hexadecimal and scientific notations of numbers.
 - Supports implicit multiplication, e.g. (a+b)(a-b) or 2(x-y) which equals to (a+b)\*(a-b) or 2\*(
   x-y)
-- Lazy evaluation of function parameters, only if needed (see the IF function).
+- Lazy evaluation of function parameters (see the IF function) and support of sub-expressions.
 
-### Discussion
+## Documentation
+
+The full documentation for EvalEx can be found
+on [GitHub Pages](https://ezylang.github.io/evalex-core/)
+
+## Discussion
 
 For announcements, questions and ideas visit
 the [Discussions area](https://github.com/ezylang/evalex-core/discussions).
 
-### Usage Examples
+## Examples
 
-````java
-// Simple expression with constant values
-Expression expression=new Expression("1 + 2 / (4 * SQRT(4))");
-    EvaluationValue result=expression.evaluate();
-    System.out.println(result.getStringValue()); // prints 1.25
+A simple example, that shows how it works in general:
 
-// Boolean expression with number, boolean and string parameter
-    Expression expression=
-    new Expression("(a > 0) || (b == true) || (name == \"Peter\")")
-    .with("a",5)
-    .and("b",true)
-    .and("name","Peter");
-    boolean result=expression.evaluate().getBooleanValue(); // is true
+```java
+Expression expression = new Expression("1 + 2 / (4 * SQRT(4))");
 
-// String support, using + operator to concatenate
-    Expression expression=
-    new Expression("\"Hello \" + name + \", you are \" + age")
+EvaluationValue result = expression.evaluate();
+
+System.out.println(result.getNumberValue()); // prints 1.25
+```
+
+Of course, variables can be specified in the expression and their values can be passed for
+evaluation:
+
+```java
+Expression expression = new Expression("(a + b) * (a - b)");
+
+EvaluationValue result = expression
+    .with("a", 3.5)
+    .and("b", 2.5)
+    .evaluate();
+
+System.out.println(result.getNumberValue()); // prints 6.00
+```
+
+Boolean expressions produce a boolean result:
+
+```java
+Expression expression = new Expression("level > 2 || level <= 0");
+
+EvaluationValue result = expression
+    .with("level", 3.5)
+    .evaluate();
+
+System.out.println(result.getBooleanValue()); // prints true
+```
+
+Like in Java, strings and text can be mixed:
+
+```java
+Expression expression = new Expression("\"Hello \" + name + \", you are \" + age")
     .with("name","Frank")
     .and("age",38);
-    System.out.println(expression.evaluate().getStringValue()); // prints Hello Frank, you are 38
-````
 
-````java
-// Array support
-List<BigDecimal> values=
-    Arrays.asList(
-    new BigDecimal("2.1"),
-    new BigDecimal("3.2"),
-    new BigDecimal("4.3"));
-    List<Integer> factors=Arrays.asList(3,4,8);
+System.out.println(expression.evaluate().getStringValue()); // prints Hello Frank, you are 38
+```
 
-    Expression expression=
-    new Expression("values[i] * factors[x]")
-    .with("values",values)
-    .and("factors",factors)
-    .and("i",1)
-    .and("x",2);
-    BigDecimal result=expression.evaluate().getNumberValue();
-    System.out.println(result); // prints 25.6
-````
+Arrays are supported and can be passed as Java _Lists_.
+See the [Documentation](https://ezylang.github.io/pages-playground/concepts/datatypes.html#array)
+for more details.
 
-````java
-// Structure support: Structures and arrays can be combined to arbitrary data structures
-Map<String, Object> order=new HashMap<>();
-    order.put("id",12345);
-    order.put("name","Mary");
-    Map<String, Object> position=new HashMap<>();
-    position.put("article",3114);
-    position.put("amount",3);
-    position.put("price",new BigDecimal("14.95"));
-    order.put("positions",Arrays.asList(position));
-    Expression expression=
-    new Expression("order.positions[x].amount * order.positions[x].price")
-    .with("order",order)
-    .and("x",0);
+```java
+Expression expression = new Expression("values[i-1] * factors[i-1]");
 
-    BigDecimal result=expression.evaluate().getNumberValue();
-    System.out.println(result); // prints 44.85
-````
+EvaluationValue result = expression
+    .with("values", List.of(2, 3, 4))
+    .and("factors", List.of(2, 4, 6))
+    .and("i", 1)
+    .evaluate();
 
-````java
-// Adding a postfix factorial operator
-@PostfixOperator
-public class PostfixFactorialOperator extends AbstractOperator {
+System.out.println(result.getNumberValue()); // prints 4
+```
 
-  @Override
-  public EvaluationValue evaluate(Expression expression, Token operatorToken,
-      EvaluationValue... operands) {
-    int number = operands[0].getNumberValue().intValue();
-    BigDecimal factorial = BigDecimal.ONE;
-    for (int i = 1; i <= number; i++) {
-      factorial =
-          factorial.multiply(
-              new BigDecimal(i, expression.getConfiguration().getMathContext()),
-              expression.getConfiguration().getMathContext());
-    }
-    return new EvaluationValue(factorial);
-  }
-}
+Structures are supported and can be passed as Java _Maps_.
+Arrays and Structures can be combined to build arbitrary data structures. See
+the [Documentation](https://ezylang.github.io/pages-playground/concepts/datatypes.html#structure)
+for more details.
 
-  ExpressionConfiguration config =
-      ExpressionConfiguration.defaultConfiguration()
-          .withAdditionalOperators(Map.entry("!", new PostfixFactorialOperator()));
-  Expression expression = new Expression("2! + 3!"); // prints 8
-````
+```java
+Map<String, Object> order = new HashMap<>();
+order.put("id", 12345);
+order.put("name", "Mary");
 
-### Author and License
+Map<String, Object> position = new HashMap<>();
+position.put("article", 3114);
+position.put("amount", 3);
+position.put("price", new BigDecimal("14.95"));
+
+order.put("positions", List.of(position));
+
+Expression expression = new Expression("order.positions[x].amount * order.positions[x].price")
+    .with("order", order)
+    .and("x", 0);
+
+BigDecimal result = expression.evaluate().getNumberValue();
+
+System.out.println(result); // prints 44.85
+```
+
+## Author and License
 
 Copyright 2012-2022 by Udo Klimaschewski
 
@@ -127,7 +137,7 @@ Copyright 2012-2022 by Udo Klimaschewski
 project: [Contributors](https://github.com/ezylang/evalex-core/graphs/contributors)**
 
 The software is licensed under the Apache License, Version 2.0 (
-see [LICENSE](https://raw.githubusercontent.com/evalex-core/evalex-core/master/LICENSE) file).
+see [LICENSE](https://raw.githubusercontent.com/ezylang/evalex-core/main/LICENSE) file).
 
 * The *power of* operator (^) implementation was copied
   from [Stack Overflow](http://stackoverflow.com/questions/3579779/how-to-do-a-fractional-power-on-bigdecimal-in-java)
